@@ -15,7 +15,7 @@ class GnomeSessionExtension(Extension):
 class KeywordQueryEventListener(EventListener):
     def on_event(self, event, extension):
         items = []
-        options = ['logout', 'restart', 'reboot', 'shutdown', 'halt', 'power-off']
+        options = ['lock', 'logout', 'restart', 'reboot', 'shutdown', 'halt', 'power-off']
         my_list = event.query.split(" ")
         if len(my_list) == 1:
             items.append(get_logout_item())
@@ -36,6 +36,8 @@ class KeywordQueryEventListener(EventListener):
                         included.append('reboot')
                     elif option in ['logout']:
                         items.append(get_logout_item())
+                    elif option in ['lock']:
+                        items.append(get_lock_item())
 
             return RenderResultListAction(items)
 
@@ -59,6 +61,13 @@ def get_shutdown_item():
                                name='Shutdown',
                                description='Power off computer',
                                on_enter=RunScriptAction("gnome-session-quit --power-off --force", None))
+
+
+def get_lock_item():
+    return ExtensionResultItem(icon='images/lock.png',
+                               name='Lock',
+                               description='Lock computer',
+                               on_enter=RunScriptAction("xdg-screensaver lock", None))
 
 
 if __name__ == '__main__':
